@@ -1,0 +1,33 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="model" default="$(find models)/urdf/fresh.urdf.xacro"/>
+  <arg name="map_file" default="$(find navigation)/maps/world.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="false"/>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- Laser Unifier -->
+  <node pkg="cob_scan_unifier" name="laser_unifier" type="scan_unifier_node" respawn="false" output="screen">
+      <rosparam command="load" file="$(find navigation)/param/unifier.yaml"/>
+  </node>
+
+  <!-- Unified Laser Scan Reducer (otherwise slam toolbox does not work!) -->
+  <node pkg="navigation" name="slam_scan_reducer" type="slam_scan_reducer.py" output="screen"/>
+
+  <!-- AMCL -->
+  <include file="$(find navigation)/launch/fresh_amcl.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find navigation)/launch/fresh_move_base.launch">
+    <arg name="model" value="$(arg model)" />
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find navigation)/rviz/fresh_navigation.rviz"/>
+  </group>
+</launch>

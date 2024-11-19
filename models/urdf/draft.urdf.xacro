@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<robot name="draft" xmnls:xacro="http://ros.org/wiki/xacro">
+
+    <joint name="base_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="base_footprint"/>
+
+    <link name="base_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.5 0.5 0.2"/>
+            </geometry>
+        </visual>
+        
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.5 0.5 0.2"/>
+            </geometry>
+        </collision>
+
+        <intertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1"/>
+            <inertia ixx="0.001" ixy="0" ixz="0"
+                     iyy="0.001" iyz="0"
+                     izz="0.001"/>
+        </intertial>
+    </link>
+
+    <joint name="laser_front_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="laser_front_link"/>
+        <origin xyz="0.4 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="laser_front_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="laser_rear_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="laser_rear_link"/>
+        <origin xyz="0.4 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="laser_rear_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+        </visual>
+    </link>
+
+</robot>

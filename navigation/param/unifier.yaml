@@ -1,0 +1,4 @@
+input_scans: ["/scan_front", "/scan_rear"]
+frame: base_footprint
+
+

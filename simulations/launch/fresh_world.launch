@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="paused" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>  
+  <arg name="model" default="$(find models)/urdf/fresh.urdf.xacro"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find mini_unix_simulations)/worlds/world.world"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="debug" value="$(arg debug)"/>
+  </include>
+
+  <!-- Laser Unifier -->
+  <!-- <node name="laser_unifier" pkg="cob_scan_unifier" type="scan_unifier_node" respawn="false" output="screen">
+      <rosparam command="load" file="$(find navigation)/param/unifier.yaml"/>
+  </node> -->
+
+  <!-- Unified Laser Scan Reducer (otherwise slam toolbox does not work!) -->
+  <!-- <node pkg="navigation" name="slam_scan_reducer" type="slam_scan_reducer.py" output="screen"/> -->
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"  args="-urdf -model mini_unix -x 0 -y 0.5 -z 0 -param robot_description" />
+
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0"/>
+  </node>
+
+</launch>

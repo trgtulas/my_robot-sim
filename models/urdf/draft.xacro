@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+
+<robot name="mini_unix_xacro" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="lidar.xacro"/>
+  <!-- <xacro:include filename="camera.xacro"/> -->
+  <!-- <xacro:include filename="depth_camera.xacro"/> -->
+  <xacro:property name="scale" value="0.4"/>
+  <xacro:property name="base_width" value="${scale * 0.857}"/>
+  <xacro:property name="base_length" value="${scale * 1.105}"/>
+  <xacro:property name="base_height" value="${scale * 0.280}"/>
+  <xacro:property name="back_wheel_radius" value="${scale * 0.12}"/>
+  <xacro:property name="back_wheel_length" value="${scale * 0.07}"/>
+  <xacro:property name="castor_radius" value="${scale * 0.05}"/>
+
+  <gazebo reference="base_footprint">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  
+  <gazebo reference="base_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <gazebo reference="right_back_wheel">
+    <material>Gazebo/Red</material>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+  </gazebo>
+
+  <gazebo reference="left_back_wheel">
+    <material>Gazebo/Red</material>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+  </gazebo>
+
+   <gazebo reference="right_front_castor">
+    <material>Gazebo/Red</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+  </gazebo>
+
+  <gazebo reference="left_front_castor">
+    <material>Gazebo/Red</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+  </gazebo> 
+
+
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="base">
+    <color rgba="0.2 0.2 0.2 1"/>
+  </material>
+  
+  <material name="gray">
+    <color rgba="0.4 0.4 0.4 1"/>
+  </material>
+
+
+  <link name="base_footprint">
+  </link>
+
+  <joint name="base_to_footprint" type="fixed"> 
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+        <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      </geometry>
+      <material name="gray"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${scale * 1.105} ${scale * 0.857} ${scale * 0.280}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${scale * 15}"/>
+      <inertia ixx="0.067737" ixy="0" ixz="0" iyy="0.108202" iyz="0.0" izz="0.162873"/>
+    </inertial>
+  </link>
+
+
+  <link name="right_back_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${back_wheel_length}" radius="${back_wheel_radius}"/>
+        <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${back_wheel_length}" radius="${back_wheel_radius}"/>
+      </geometry>
+      <!-- <origin xyz="0 0 0"/> -->
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0040083" ixy="0" ixz="0" iyy="0.0040083" iyz="0.0" izz="0.0072"/>
+    </inertial>
+  </link>
+
+
+  <joint name="right_back_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_back_wheel"/>
+    <origin rpy="1.5708 0 0"  xyz="${scale * -0.3325} ${scale * -0.3085} ${scale * -0.07}"/> 
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <link name="left_back_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${back_wheel_length}" radius="${back_wheel_radius}"/>
+        <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${back_wheel_length}" radius="${back_wheel_radius}"/>
+      </geometry>
+      <!-- <origin xyz="0 0 0"/> -->
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0040083" ixy="0" ixz="0" iyy="0.0040083" iyz="0.0" izz="0.0072"/>
+    </inertial>
+  </link>
+
+
+  <joint name="left_back_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_back_wheel"/>
+    <origin rpy="1.5708 0 0"  xyz="${scale * -0.3325} ${scale * 0.3085} ${scale * -0.07}"/> 
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+
+  <link name="right_front_castor">
+    <visual>
+      <geometry>
+        <sphere radius="${castor_radius}"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${castor_radius}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${scale * 0.8}"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+
+  <joint name="right_front_castor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_front_castor"/>
+    <origin rpy="1.5708 0 0"  xyz="${scale * 0.3325} ${scale * -0.3085} ${scale * -0.14}"/> 
+    <axis xyz="0 0 1"/>
+  </joint>
+
+
+  <link name="left_front_castor">
+    <visual>
+      <geometry>
+        <sphere radius="${castor_radius}"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${castor_radius}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${scale * 0.8}"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+
+  <joint name="left_front_castor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="left_front_castor"/>
+    <origin rpy="1.5708 0 0"  xyz="${scale * 0.3325} ${scale * 0.3085} ${scale * -0.14}"/>  
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo>
+
+<!--wheel diameter is changed to -240 to fix the moving axes of the robot -->
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <legacyMode>false</legacyMode>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>50.0</updateRate>
+      <leftJoint>left_back_wheel_joint</leftJoint>
+      <rightJoint>right_back_wheel_joint</rightJoint>
+      <wheelSeparation>${scale * 0.66}</wheelSeparation>
+      <wheelDiameter>${scale * 0.24}</wheelDiameter>
+      <!-- <wheelAcceleration>1.2</wheelAcceleration> -->
+      <wheelAcceleration>0.5</wheelAcceleration>
+      <wheelTorque>20</wheelTorque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <odometrySource>1</odometrySource>
+      <!--while publishWheelTF is set to true, warning message occurs in terminal -->
+      <publishWheelTF>false</publishWheelTF>
+      <publishOdomTF>true</publishOdomTF>
+      <publishWheelJointState>true</publishWheelJointState>
+      <!-- <maxVelX>2.0</maxVelX> 
+      <maxVelTheta>0.7</maxVelTheta> 
+      <minVelTheta>0.0</minVelTheta> -->
+    </plugin>
+  </gazebo>
+
+</robot>

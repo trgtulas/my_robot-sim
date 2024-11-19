@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+
+from messages.srv   import to_goal
+from messages.srv   import to_goalRequest
+from messages.srv   import to_goalResponse
+from nav_msgs.msg   import Odometry
+from geometry_msgs.msg  import PoseStamped
+from geometry_msgs.msg import Point
+from math           import isclose
+from actionlib_msgs.msg  import GoalStatusArray
+
+import rospy
+
+class RobotPosition:
+    def __init__(self):
+        self.current_pose = Point()
+        self.arrived = False
+        self.time_passed = 0
+        self.target_pose = Point()
+        self.reached = GoalStatusArray()
+        rospy.Subscriber('move_base/status', GoalStatusArray, self.status_callback)
+        # rospy.Subscriber('odom', Odometry, self.odom_callback)
+        # rospy.Subscriber('move_base_simple/goal', PoseStamped, self.pose_callback)
+        rospy.Service('to_goal', to_goal, self.handle_to_goal)
+        rospy.loginfo("getting robot position...")
+
+    def odom_callback(self, msg):
+        self.current_pose = msg.pose.pose.position
+        # self.reached = msg.status_list
+        # rospy.loginfo("current pose: x = %f y = %f", self.current_pose.x, self.current_pose.y)
+        # rospy.loginfo("target pose:  x = %f y = %f", self.target_pose.x, self.target_pose.y)
+
+    def pose_callback(self, msg):
+        self.target_pose = msg.pose.position
+
+    def status_callback(self, msg):
+        self.reached.status_list = msg.status_list
+        
+    def handle_to_goal(self, req):
+        # if( isclose(self.current_pose.x, self.target_pose.x, rel_tol=5e-3) and isclose(self.current_pose.y, self.target_pose.y, rel_tol=2e-3) ):
+        # if(self.current_pose.x == 0 and self.current_pose.y == 0.5):
+        if (self.reached.status_list[0].status == 3):
+            self.arrived = True
+            rospy.loginfo("goal reached..")
+            return to_goalResponse(self.arrived)
+        else:
+            rospy.loginfo("current pose: x = %f y = %f", self.current_pose.x, self.current_pose.y)
+
+if __name__ == "__main__":
+    rospy.init_node('server_node')
+    RobotPosition()
+
+    
+    rospy.spin()

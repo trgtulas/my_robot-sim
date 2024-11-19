@@ -1,0 +1,10 @@
+gazebo_ros_control:
+  pid_gains:
+    left_back_joint:
+      p: 100.0
+      i: 0.01
+      d: 0.1
+    right_back_joint:
+      p: 100.0
+      i: 0.01
+      d: 0.1

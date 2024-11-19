@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+        <node name="laser_unifier_mid" pkg="cob_scan_unifier" type="scan_unifier_node" respawn="false" output="screen">
+        <rosparam command="load" file="$(find sdv_control)/params/unifier_mid.yaml"/>
+        </node>
+</launch>
+
